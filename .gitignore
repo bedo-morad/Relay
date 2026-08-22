@@ -1,0 +1,43 @@
+# ---------- Secrets / environment ----------
+.env
+*.env.local
+!*.env.example
+
+# ---------- IntelliJ IDEA ----------
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# ---------- Java / Spring Boot ----------
+target/
+build/
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# logs & runtime dumps
+*.log
+hs_err_pid*
+replay_pid*
+
+# ---------- Node / Angular ----------
+node_modules/
+dist/
+.angular/
+coverage/
+npm-debug.log*
+yarn-error.log
+pnpm-debug.log*
+.npmrc
+
+# ---------- Docker (local only) ----------
+docker-compose.override.yml
+
+# ---------- OS junk ----------
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
