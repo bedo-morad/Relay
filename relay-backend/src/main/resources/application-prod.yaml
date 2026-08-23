@@ -1,0 +1,32 @@
+# Production overrides — every value arrives via environment variables, no defaults.
+# Activate with SPRING_PROFILES_ACTIVE=prod
+
+spring:
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI}
+  jpa:
+    show-sql: false
+
+management:
+  endpoint:
+    health:
+      show-details: never
+
+# D-11: no API docs exposed in production
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false
