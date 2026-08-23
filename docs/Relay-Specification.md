@@ -1,6 +1,6 @@
 # Relay — Requirements Specification Pack
 
-**Version:** 1.0.1
+**Version:** 1.0.2
 **Date:** 2026-08-20
 **Status:** Signed
 
@@ -21,6 +21,7 @@
 |---|---|---|---|
 | 1.0 | 2026-08-20 | PM | Initial draft |
 | 1.0.1 | 2026-08-23 | Owner | Amendments D-18…D-22: Boot/Java pins, Resend email delivery, social-login scope reduction, admin-client versioning |
+| 1.0.2 | 2026-08-23 | Owner | Amendments D-23…D-26: frontend library set pinned, Bucket4j rate limiting, openhtmltopdf invoices, .env configuration convention; social login finalized to Google+Facebook; Resend confirmed for all environments; Boot 4.0.8 rationale sharpened |
 
 ### 1.3 Sign-off
 
@@ -98,12 +99,14 @@ The following stack is mandatory. No substitution without written client approva
 
 | Layer | Technology | Version / Notes |
 |---|---|---|
-| Backend | Spring Boot | 4.0.8 (pinned — springdoc-openapi compatibility, see D-18; upgrade path to 4.1.x tracked) |
-| Frontend | Angular | 22 (TypeScript), Bootstrap |
+| Backend | Spring Boot | 4.0.8 (pinned — springdoc-openapi requires Boot < 4.1.0, see D-18; upgrade path to 4.1.x tracked) |
+| Frontend | Angular | 22 (TypeScript), SCSS, Bootstrap 5.3 — pinned libraries per D-23: @ng-bootstrap/ng-bootstrap, @fortawesome/fontawesome-free, keycloak-js 26.x, @angular/localize, @ngxpert/hot-toast |
 | Database | PostgreSQL | Pin a fixed major (e.g., 18.x) at latest patch — not "latest LTS" |
-| Identity / Auth | Keycloak | Handles registration, login, email verification, password reset, and social login (Facebook, X, Google, Apple) |
+| Identity / Auth | Keycloak | Handles registration, login, email verification, password reset, and social login (Google, Facebook only — D-20) |
 | API documentation | OpenAPI / Swagger | OpenAPI spec generated from all backend endpoints; serves as the integration contract. Swagger UI is exposed in dev/staging only; in production it is disabled or restricted (Section 14, D-11). |
 | Background/batch jobs | Spring Batch | Expiration handling, attachment processing, analytics aggregation |
+| Rate limiting | Bucket4j | Token-bucket rate limiting on abuse-prone endpoints (NFR-24); Redis-backed for distributed limits | 
+| Invoice PDF generation | openhtmltopdf | HTML→PDF receipts incl. Arabic RTL support module (AC-08-07) |
 | Caching | Redis | Session/cache layer; Redis key TTL is set to match each note's expiry (lazy expiration, FR-06) |
 | Load balancing | Load balancer | Distribute traffic across backend instances |
 | Containerization | Docker | Backend and frontend |
@@ -121,6 +124,7 @@ The following stack is mandatory. No substitution without written client approva
 - Expiration is **lazy**: access validity is checked at read time; no background job is required for a note to become expired, and expiration never deletes a note directly (expired notes are purged after 90 days, D-17). After expiry the note is inaccessible to everyone, including its creator (FR-06).
 - OpenAPI/Swagger must document all backend endpoints.
 - Docker Compose or equivalent must allow local reproduction of the full stack.
+- **Environment configuration convention:** all environment-specific values (DB/Redis/Keycloak endpoints, secrets, API keys) are supplied through environment variables backed by a gitignored `.env` file locally and a committed `.env.example` template; no credentials are ever hardcoded or committed.
 - **Version matrix:** pin mutually compatible versions for Java (**17, pinned** — D-21), Node, TypeScript, springdoc-openapi (verify Spring Boot 4.x compatibility explicitly — springdoc 3.x targets Boot 4.0.x, which drove D-18), Keycloak (26.x), Redis, and the build tool; lockfiles/toolchain files are deliverables (Section 13.1).
 
 ---
@@ -151,7 +155,7 @@ Phases are a scheduling guide; all phases are in contract scope. See Section 16 
 
 ### 8.1 FR-01 — Account Creation & Authentication (Phase P1)
 
-**Description:** Users register, log in, and manage identity. Authentication is handled by Keycloak. Email verification and password reset are required. Social login at launch supports Google and Facebook (Apple/X deferred — D-20). Every account has a display name. Email acts as the username/login. A user can delete their own account.
+**Description:** Users register, log in, and manage identity. Authentication is handled by Keycloak. Email verification and password reset are required. Social login supports Google and Facebook only (D-20). Every account has a display name. Email acts as the username/login. A user can delete their own account.
 
 **User stories:**
 - As a visitor, I can create an account with a display name, email, and password.
@@ -165,7 +169,7 @@ Phases are a scheduling guide; all phases are in contract scope. See Section 16 
 - AC-01-01 Registration requires a display name (max 50 chars), email, and password. Email is the username/login. Duplicate email is rejected with a clear message.
 - AC-01-02 A verification email is sent upon registration; a resend option exists. The account **cannot log in until the email is verified**.
 - AC-01-03 Password reset flow: request → email link → set new password. Reset links are single-use and expire after 1 hour.
-- AC-01-04 Social login works with all delivered providers. **Amended by D-20:** launch scope is Google + Facebook; Apple and X are deferred (paid developer accounts required) — the Keycloak realm is designed so their generic OIDC/OAuth2 broker configs can be added later without code changes. A display name is taken from the provider (fallback: "User") and can be changed later. Where a social login email matches an existing account, the accounts are linked after user confirmation; the definition of duplicate-account handling is a Keycloak first-broker-login policy. The immutable Relay owner ID is the Keycloak `sub` claim.
+- AC-01-04 Social login works with Google and Facebook (D-20). A display name is taken from the provider (fallback: "User") and can be changed later. Where a social login email matches an existing account, the accounts are linked after user confirmation; the definition of duplicate-account handling is a Keycloak first-broker-login policy. The immutable Relay owner ID is the Keycloak `sub` claim.
 - AC-01-05 A password strength policy is enforced; weak passwords (e.g., "12345678") are rejected with a localized message.
 - AC-01-06 An unverified account is blocked at the login page — it cannot sign in. As a guest (not logged in), a visitor can still view public notes.
 - AC-01-07 A user can permanently delete their account. Deletion is orchestrated by the application: it removes all the user's notes and attachments and invalidates all their cached data first, then deletes the Keycloak account (with the `DELETE_ACCOUNT` required action enabled and the delete-account role assigned). The flow is idempotent and safe on partial failure. A confirmation step is required. (Right-to-erasure, FR-01.)
@@ -675,11 +679,15 @@ These decisions were made by the client PM where the CEO delegated them. The dev
 | D-15 | Caching & capacity baseline | Single Redis node with AOF persistence at launch; clustering/HA only if scale demands. Versioned cache keys + post-commit invalidation (NFR-03). Capacity floor: ≥1,000 concurrent note views at launch (NFR-04) | Tech review: Redis topology and capacity targets unspecified. |
 | D-16 | Expiration authority | The persisted `expires_at` compared against the server clock is the authority; Redis TTL is eviction-only. On Redis failure, access falls back to the database (FR-06 AC-06-07/08) | Tech review: Redis TTL cannot guarantee exact expiry. |
 | D-17 | Expired-note retention | Expired notes and their attachments are purged 90 days after expiry by the batch job. Until purge, the note shows as "expired" in "My notes", counts toward the 5-note limit, and can be deleted by the creator (FR-06 AC-06-09/10) | CEO decision: expiry applies to everyone including the creator; resolves O-06. |
-| D-18 | Spring Boot version | Backend pinned to **Spring Boot 4.0.8**, not 4.1.x — springdoc-openapi does not yet support Boot 4.1. Upgrade to 4.1.x is tracked as future work once springdoc compatibility lands | Dev decision: working OpenAPI tooling (NFR-15) outranks the minor-version target in §6. |
-| D-19 | Transactional email delivery | Email sent via **Resend** using its Java SDK (`resend-java`), replacing the generic SMTP assumption in §6/architecture diagrams. Provider swap later = code change, accepted trade-off | Owner decision: chose Resend over SMTP-agnostic JavaMail for simplicity. |
-| D-20 | Social login launch scope | Launch with **Google + Facebook only**. Apple (paid developer account) and X (paid API tier) are deferred; realm designed for zero-code addition later. AC-01-04 amended accordingly | Owner decision: cost constraint ($0 budget at launch). |
+| D-18 | Spring Boot version | Backend pinned to **Spring Boot 4.0.8**, not 4.1.x — springdoc-openapi (NFR-15) requires Boot **< 4.1.0**. Upgrade to 4.1.x is tracked as future work once springdoc compatibility lands | Dev decision: working OpenAPI tooling outranks the minor-version target in §6. |
+| D-19 | Transactional email delivery | Email sent via **Resend** using its Java SDK (`resend-java`) in **all environments — dev and production alike**; there is no local SMTP catcher (e.g., Mailpit) in this project. Provider swap later = code change, accepted trade-off | Owner decision: chose Resend over SMTP-agnostic JavaMail for simplicity, one provider everywhere. |
+| D-20 | Social login scope | Social login is **Google + Facebook only**. Apple and X are removed from product scope entirely (Apple requires a paid developer account; X removed its free tier in Feb 2026 and now requires payment-on-file for pay-per-use API access). AC-01-04 amended accordingly. No future re-addition is planned or provisioned | Owner decision: cost constraint ($0 budget). |
 | D-21 | Java version | Pinned to **Java 17** (spec minimum), not 21 LTS. Accepted: no virtual-threads/LTS gains until revisited | Owner decision: team standard settled on 17 before build start. |
 | D-22 | Keycloak admin-client versioning | `keycloak-admin-client` may sit on a different 26.x patch/minor line than the Keycloak server (26.7.0); client kept on latest available 26.x release rather than force-matched | Dev finding: admin-client releases do not track server patches one-to-one; REST Admin API contract is stable within 26.x. |
+| D-23 | Frontend library set | Pinned exactly: Bootstrap 5.3 imported from **SCSS source** (variable overrides for theming, FR-13), `@ng-bootstrap/ng-bootstrap` (Angular widgets), `@fortawesome/fontawesome-free` (sole icon set), `keycloak-js` 26.x (OIDC/PKCE against hosted Keycloak pages), `@angular/localize` (**compile-time i18n — accepted trade-off:** runtime language switching requires per-locale bundles behind locale routes rather than in-place swapping; revisit against AC-12-03 at FR-12 build time), `@ngxpert/hot-toast` (toast notifications). No additional UI libraries without spec amendment | Owner decision: fixed toolset for the whole frontend. |
+| D-24 | Rate-limiting engine | Abuse-prone endpoint rate limiting (NFR-24) implemented with **Bucket4j**, Redis-backed so limits are shared across horizontally scaled backend instances | Tech review: NFR-24 left mechanism unspecified. |
+| D-25 | Invoice PDF engine | AC-08-07 receipts generated with **openhtmltopdf**, including its RTL support module for Arabic invoices | Tech review: PDF library unspecified; RTL is an FR-12/AC-08-07 requirement. |
+| D-26 | Environment configuration | All environment-specific values delivered via environment variables backed by a gitignored **`.env`** file locally and a committed `.env.example` template (§6.1 convention) | Owner decision: standardize on .env across compose + backend + CI. |
 
 ---
 

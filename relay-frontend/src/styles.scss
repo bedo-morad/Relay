@@ -1,0 +1,16 @@
+// ── Vendor styles ─────────────────────────────────────────────
+// Bootstrap from SCSS source: lets us override its variables
+// before compilation (needed for FR-13 light/dark theming later).
+@use 'bootstrap/scss/bootstrap';
+
+// Font Awesome from SCSS source — import only the sets you use;
+// each adds weight to the production bundle.
+@use '@fortawesome/fontawesome-free/scss/fontawesome';
+@use '@fortawesome/fontawesome-free/scss/solid';
+@use '@fortawesome/fontawesome-free/scss/brands';
+
+/* Importing @ngxpert/hot-toast base styles. */
+@use '@ngxpert/hot-toast/styles';
+
+// ── Global Relay styles below this line ───────────────────────
+
