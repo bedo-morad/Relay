@@ -75,6 +75,49 @@ services:
       timeout: 3s
       retries: 10
 
+  backend:
+    build: ./relay-backend
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      POSTGRES_HOST: postgres          # service name inside the compose network
+      POSTGRES_USER: ${POSTGRES_USER:-relay}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-relay}
+      POSTGRES_DB: ${POSTGRES_DB:-relay}
+      REDIS_HOST: redis
+      # Must stay the BROWSER-facing URL: JWT 'iss' claims are minted from what
+      # the browser used, and the backend validates issuer match. host-gateway
+      # routes the container back out to your published port 9090.
+      KEYCLOAK_SERVER_URL: http://host.docker.internal:9090
+      KC_ADMIN_CLIENT_ID: ${KC_ADMIN_CLIENT_ID:-relay-admin}
+      KC_ADMIN_CLIENT_SECRET: ${KC_ADMIN_CLIENT_SECRET:-change-me}
+      RESEND_API_KEY: ${RESEND_API_KEY:-change-me}
+      EMAIL_FROM: ${EMAIL_FROM:-no-reply@relay.local}
+    ports:
+      - "8080:8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep -q '\"status\":\"UP\"'"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  frontend:
+    build: ./relay-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
 volumes:
   pgdata:
   redisdata:
