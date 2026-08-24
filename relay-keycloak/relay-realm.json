@@ -1,0 +1,130 @@
+{
+  "realm": "relay",
+  "displayName": "Relay",
+  "enabled": true,
+
+  "sslRequired": "external",
+
+  "registrationAllowed": true,
+  "registrationEmailAsUsername": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "editUsernameAllowed": false,
+
+  "resetPasswordAllowed": true,
+  "rememberMe": true,
+  "verifyEmail": false,
+
+  "ssoSessionIdleTimeout": 86400,
+  "ssoSessionMaxLifespan": 86400,
+  "ssoSessionIdleTimeoutRememberMe": 2592000,
+  "ssoSessionMaxLifespanRememberMe": 2592000,
+
+  "bruteForceProtected": true,
+  "permanentLockout": false,
+  "failureFactor": 10,
+  "waitIncrementSeconds": 30,
+  "maxFailureWaitSeconds": 900,
+  "minimumQuickLoginWaitSeconds": 60,
+  "quickLoginCheckMilliSeconds": 1000,
+  "maxDeltaTimeSeconds": 3600,
+
+  "internationalizationEnabled": true,
+  "supportedLocales": ["en", "ar", "fr", "es", "de"],
+  "defaultLocale": "en",
+
+  "actionTokenGeneratedByUserLifespan": 3600,
+
+  "clients": [
+    {
+      "clientId": "account",
+      "name": "${client_account}",
+      "description": "${client_account_description}",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "frontchannelLogout": false,
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [],
+      "webOrigins": [],
+      "defaultClientScopes": [
+        "profile",
+        "email",
+        "roles",
+        "web-origins"
+      ]
+    },
+    {
+      "clientId": "account-console",
+      "name": "${client_account_console}",
+      "description": "Account console - users manage their sessions, devices, apps, and password",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "rootUrl": "${authBaseUrl}",
+      "baseUrl": "/realms/relay/account/",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "/realms/relay/account/*"
+      ],
+      "webOrigins": [],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "+"
+      },
+      "defaultClientScopes": [
+        "profile",
+        "email",
+        "roles",
+        "web-origins"
+      ]
+    },
+    {
+      "clientId": "relay-frontend",
+      "name": "Relay Web App",
+      "description": "Angular SPA - public OIDC client with PKCE",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "http://localhost:4200",
+        "http://localhost:4200/",
+        "http://localhost:4200/silent-check-sso.html"
+      ],
+      "webOrigins": [
+        "http://localhost:4200"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      },
+      "defaultClientScopes": [
+        "profile",
+        "email",
+        "roles",
+        "web-origins"
+      ]
+    },
+    {
+      "clientId": "relay-admin",
+      "name": "Relay Backend Admin",
+      "description": "Confidential service-account client for the Keycloak Admin REST API (account deletion, AC-01-07)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "secret": "${KC_ADMIN_CLIENT_SECRET}",
+      "redirectUris": [],
+      "webOrigins": [],
+      "defaultClientScopes": []
+    }
+  ],
+
+  "users": []
+}

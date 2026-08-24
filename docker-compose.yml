@@ -35,7 +35,12 @@ services:
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.7.0
-    command: start-dev
+    # --import-realm: imports realm JSON from /opt/keycloak/data/import at boot.
+    # NOTE: import is skipped when the realm already exists — after editing
+    # relay-keycloak/relay-realm.json, recreate the keycloak DB (see docs).
+    command: start-dev --import-realm
+    volumes:
+      - ./relay-keycloak:/opt/keycloak/data/import:ro
     environment:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
