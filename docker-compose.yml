@@ -50,6 +50,9 @@ services:
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME:-admin}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD:-admin}
       KC_HEALTH_ENABLED: "true"
+      # consumed by relay-realm.json SMTP config at realm import
+      RESEND_API_KEY: ${RESEND_API_KEY:-change-me}
+      EMAIL_FROM: ${EMAIL_FROM:-no-reply@relay.local}
     ports:
       - "9090:8080"
     depends_on:

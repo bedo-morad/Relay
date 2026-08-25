@@ -13,7 +13,46 @@
 
   "resetPasswordAllowed": true,
   "rememberMe": true,
-  "verifyEmail": false,
+  "verifyEmail": true,
+
+  "smtpServer": {
+    "host": "smtp.resend.com",
+    "port": "587",
+    "from": "${EMAIL_FROM}",
+    "fromDisplayName": "Relay",
+    "auth": "true",
+    "user": "resend",
+    "password": "${RESEND_API_KEY}",
+    "ssl": "false",
+    "starttls": "true"
+  },
+
+  "requiredActions": [
+    {
+      "alias": "VERIFY_EMAIL",
+      "name": "Verify Email",
+      "providerId": "VERIFY_EMAIL",
+      "enabled": true,
+      "defaultAction": true,
+      "priority": 50
+    },
+    {
+      "alias": "UPDATE_PASSWORD",
+      "name": "Update Password",
+      "providerId": "UPDATE_PASSWORD",
+      "enabled": true,
+      "defaultAction": true,
+      "priority": 60
+    },
+    {
+      "alias": "delete_account",
+      "name": "Delete Account",
+      "providerId": "delete_account",
+      "enabled": true,
+      "defaultAction": false,
+      "priority": 100
+    }
+  ],
 
   "ssoSessionIdleTimeout": 86400,
   "ssoSessionMaxLifespan": 86400,
@@ -128,5 +167,11 @@
     }
   ],
 
-  "users": []
+  "users": [],
+
+  "defaultRoles": [
+    "offline_access",
+    "uma_authorization",
+    "delete-account"
+  ]
 }

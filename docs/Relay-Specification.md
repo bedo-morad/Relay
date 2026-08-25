@@ -1,6 +1,6 @@
 # Relay — Requirements Specification Pack
 
-**Version:** 1.0.2
+**Version:** 1.0.3
 **Date:** 2026-08-20
 **Status:** Signed
 
@@ -22,6 +22,7 @@
 | 1.0 | 2026-08-20 | PM | Initial draft |
 | 1.0.1 | 2026-08-23 | Owner | Amendments D-18…D-22: Boot/Java pins, Resend email delivery, social-login scope reduction, admin-client versioning |
 | 1.0.2 | 2026-08-23 | Owner | Amendments D-23…D-26: frontend library set pinned, Bucket4j rate limiting, openhtmltopdf invoices, .env configuration convention; social login finalized to Google+Facebook; Resend confirmed for all environments; Boot 4.0.8 rationale sharpened |
+| 1.0.3 | 2026-08-25 | Owner | Amendment D-27: registration collects display name + email; password is set by the user immediately after email verification (Keycloak 26 native flow). AC-01-01 amended accordingly |
 
 ### 1.3 Sign-off
 
@@ -166,7 +167,7 @@ Phases are a scheduling guide; all phases are in contract scope. See Section 16 
 - As a user, I can permanently delete my account.
 
 **Acceptance criteria:**
-- AC-01-01 Registration requires a display name (max 50 chars), email, and password. Email is the username/login. Duplicate email is rejected with a clear message.
+- AC-01-01 Registration requires a display name (max 50 chars) and email. Email is the username/login. Duplicate email is rejected with a clear message. **Amended by D-27:** the password is not entered on the registration form — after verifying their email, the user sets their password on the follow-up screen (Keycloak 26 native flow; unverified accounts never hold credentials). The password strength policy (AC-01-05) applies at that step.
 - AC-01-02 A verification email is sent upon registration; a resend option exists. The account **cannot log in until the email is verified**.
 - AC-01-03 Password reset flow: request → email link → set new password. Reset links are single-use and expire after 1 hour.
 - AC-01-04 Social login works with Google and Facebook (D-20). A display name is taken from the provider (fallback: "User") and can be changed later. Where a social login email matches an existing account, the accounts are linked after user confirmation; the definition of duplicate-account handling is a Keycloak first-broker-login policy. The immutable Relay owner ID is the Keycloak `sub` claim.
