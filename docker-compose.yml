@@ -50,9 +50,13 @@ services:
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME:-admin}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD:-admin}
       KC_HEALTH_ENABLED: "true"
-      # consumed by relay-realm.json SMTP config at realm import
+      # consumed by relay-realm.json at realm import (SMTP + social brokers)
       RESEND_API_KEY: ${RESEND_API_KEY:-change-me}
       EMAIL_FROM: ${EMAIL_FROM:-no-reply@relay.local}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-unset}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-unset}
+      FACEBOOK_CLIENT_ID: ${FACEBOOK_CLIENT_ID:-unset}
+      FACEBOOK_CLIENT_SECRET: ${FACEBOOK_CLIENT_SECRET:-unset}
     ports:
       - "9090:8080"
     depends_on:
