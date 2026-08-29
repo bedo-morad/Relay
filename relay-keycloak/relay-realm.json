@@ -3,6 +3,8 @@
   "displayName": "Relay",
   "enabled": true,
 
+  "loginTheme": "relay",
+
   "sslRequired": "external",
 
   "registrationAllowed": true,
