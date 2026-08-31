@@ -326,15 +326,18 @@ header.pf-v5-c-masthead {
 }
 
 .pf-v5-c-button.pf-m-secondary,
-.pf-v5-c-button.pf-m-link {
+.pf-v5-c-button.pf-m-link,
+.pf-v5-c-button.pf-m-plain,
+.pf-v5-c-button.pf-m-tertiary {
   border-radius: 10px !important;
   font-weight: 500 !important;
 }
 
+/* Secondary (bordered) — dynamic, readable on both themes */
 .pf-v5-c-button.pf-m-secondary {
   background: transparent !important;
   border: 1.5px solid var(--relay-border) !important;
-  color: var(--relay-text-secondary) !important;
+  color: var(--relay-text) !important;
 }
 
 .pf-v5-c-button.pf-m-secondary:hover {
@@ -343,12 +346,54 @@ header.pf-v5-c-masthead {
   border-color: var(--relay-border-strong) !important;
 }
 
-.pf-v5-c-button.pf-m-link {
-  color: var(--relay-primary) !important;
+.pf-v5-c-button.pf-m-secondary:focus {
+  border-color: var(--relay-input-focus-border) !important;
 }
 
-.pf-v5-c-button.pf-m-link:hover {
-  color: var(--relay-primary-hover) !important;
+/* Link / Plain / Tertiary (e.g., Cancel) — MUST be dynamic, not fixed primary #1E3A5F which is unreadable on dark */
+.pf-v5-c-button.pf-m-link,
+.pf-v5-c-button.pf-m-plain,
+.pf-v5-c-button.pf-m-tertiary,
+.pf-v5-c-button.pf-m-control {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: var(--relay-text-secondary) !important;
+}
+
+.pf-v5-c-button.pf-m-link:hover,
+.pf-v5-c-button.pf-m-plain:hover,
+.pf-v5-c-button.pf-m-tertiary:hover {
+  background: var(--relay-surface-elevated) !important;
+  color: var(--relay-text) !important;
+}
+
+/* PatternFly also sets link color via global var — make it theme-aware */
+:root,
+[data-relay-theme="dark"] {
+  --pf-v5-global--link--Color: #93C5FD !important;
+  --pf-v5-global--link--Color--hover: #BFDBFE !important;
+  --pf-v5-c-button--m-link--Color: var(--relay-text-secondary) !important;
+  --pf-v5-c-button--m-link--hover--Color: var(--relay-text) !important;
+  --pf-v5-c-button--m-secondary--Color: var(--relay-text) !important;
+  --pf-v5-c-button--m-plain--Color: var(--relay-text-secondary) !important;
+}
+
+[data-relay-theme="light"] {
+  --pf-v5-global--link--Color: var(--relay-primary) !important;
+  --pf-v5-global--link--Color--hover: var(--relay-primary-hover) !important;
+  --pf-v5-c-button--m-link--Color: var(--relay-text-secondary) !important;
+  --pf-v5-c-button--m-link--hover--Color: var(--relay-text) !important;
+  --pf-v5-c-button--m-secondary--Color: var(--relay-text) !important;
+}
+
+/* Ensure cancel/secondary inside forms (like Personal Info) inherits dynamic color even if PF sets it via inline var */
+.pf-v5-c-form__actions .pf-v5-c-button:not(.pf-m-primary) {
+  color: var(--relay-text-secondary) !important;
+}
+
+.pf-v5-c-form__actions .pf-v5-c-button:not(.pf-m-primary):hover {
+  color: var(--relay-text) !important;
+  background: var(--relay-surface-elevated) !important;
 }
 
 /* Danger button keeps red but with relay radius */
