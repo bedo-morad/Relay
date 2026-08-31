@@ -88,8 +88,8 @@
       "protocol": "openid-connect",
       "publicClient": false,
       "frontchannelLogout": false,
-      "serviceAccountsEnabled": true,
-      "standardFlowEnabled": true,
+      "serviceAccountsEnabled": false,
+      "standardFlowEnabled": false,
       "directAccessGrantsEnabled": false,
       "redirectUris": [],
       "webOrigins": [],
@@ -204,9 +204,60 @@
 
   "users": [],
 
-  "defaultRoles": [
-    "offline_access",
-    "uma_authorization",
-    "delete-account"
-  ]
+  "roles": {
+    "realm": [
+      {
+        "name": "offline_access",
+        "description": "${role_offline-access}",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "name": "uma_authorization",
+        "description": "${role_uma_authorization}",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "name": "delete-account",
+        "description": "Allows the user to delete their own account",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "name": "default-roles-relay",
+        "description": "${role_default-roles}",
+        "composite": true,
+        "composites": {
+          "realm": [
+            "offline_access",
+            "uma_authorization",
+            "delete-account"
+          ],
+          "client": {
+            "account": [
+              "manage-account",
+              "view-profile",
+              "manage-account-links"
+            ]
+          }
+        },
+        "clientRole": false
+      }
+    ],
+    "client": {
+      "account": [
+        { "name": "manage-account",       "description": "${role_manage-account}",       "composite": false, "clientRole": true },
+        { "name": "view-profile",         "description": "${role_view-profile}",         "composite": false, "clientRole": true },
+        { "name": "manage-account-links", "description": "${role_manage-account-links}", "composite": false, "clientRole": true }
+      ]
+    }
+  },
+
+  "defaultRole": {
+    "name": "default-roles-relay",
+    "description": "${role_default-roles}",
+    "composite": true,
+    "clientRole": false
+  }
 }
