@@ -42,22 +42,22 @@
 }
 
 [data-relay-theme="light"] {
-  --relay-bg:                 #F8F5EF;
-  --relay-bg-accent:          #FFF7E6;
+  --relay-bg:                 #FDFBF6;
+  --relay-bg-accent:          #FFFFFF;
   --relay-surface:            #FFFFFF;
   --relay-surface-elevated:   #FFFFFF;
-  --relay-border:             #E8E2D8;
-  --relay-border-strong:      #D4CCC0;
-  --relay-text:               #1A1A1A;
-  --relay-text-secondary:     #555049;
-  --relay-text-muted:         #8A847C;
+  --relay-border:             #E2E8F0;
+  --relay-border-strong:      #CBD5E1;
+  --relay-text:               #0F172A;
+  --relay-text-secondary:     #475569;
+  --relay-text-muted:         #64748B;
   --relay-primary:            #1E3A5F;
   --relay-primary-hover:      #24486F;
   --relay-primary-active:     #162C4A;
   --relay-pro:                #C88A14;
   --relay-pro-glow:           rgba(200, 138, 20, 0.15);
-  --relay-input-bg:           #F5F1EB;
-  --relay-input-border:       #DDD7CC;
+  --relay-input-bg:           #FFFFFF;
+  --relay-input-border:       #E2E8F0;
   --relay-input-focus-border: #3B82F6;
   --relay-input-focus-ring:   rgba(59, 130, 246, 0.15);
   --relay-shadow:             0 1px 2px rgba(15, 23, 42, 0.04),
@@ -66,12 +66,12 @@
                               0 4px 16px rgba(15, 23, 42, 0.06),
                               0 16px 48px rgba(15, 23, 42, 0.08);
   --relay-icon-stroke:        #1E3A5F;
-  --relay-wordmark:           #1A1A1A;
+  --relay-wordmark:           #0F172A;
   --relay-pill1:              #1E3A5F;
   --relay-pill2:              #C88A14;
-  --relay-bg-image:           radial-gradient(1400px 700px at 15% -5%, rgba(255, 247, 230, 0.8) 0%, transparent 55%),
-                              radial-gradient(1000px 600px at 100% 100%, rgba(254, 243, 199, 0.5) 0%, transparent 50%),
-                              radial-gradient(600px 400px at 50% 50%, rgba(200, 138, 20, 0.03) 0%, transparent 70%);
+  --relay-bg-image:           radial-gradient(1400px 700px at 15% -5%, rgba(253, 251, 246, 0.9) 0%, transparent 55%),
+                              radial-gradient(1000px 600px at 100% 100%, rgba(226, 232, 240, 0.6) 0%, transparent 50%),
+                              radial-gradient(600px 400px at 50% 50%, rgba(200, 138, 20, 0.04) 0%, transparent 70%);
   color-scheme: light;
 }
 

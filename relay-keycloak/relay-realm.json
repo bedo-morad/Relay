@@ -4,6 +4,7 @@
   "enabled": true,
 
   "loginTheme": "relay",
+  "accountTheme": "relay",
   "emailTheme": "relay",
 
   "sslRequired": "external",

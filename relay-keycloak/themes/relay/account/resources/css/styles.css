@@ -1,0 +1,567 @@
+/* ================================================================
+   Relay — Keycloak Account Console Theme (Keycloak 26.7 v3)
+   Brand: Deep Lapis + Warm Sand + Muted Amber (Pro)
+   Tokens: docs/brand/tokens.json  — dark-first, light derived
+   Matches: relay login theme styling, light/dark via localStorage
+   ================================================================ */
+
+/* ─── Relay Tokens (mirrors login theme — tokens.json truth) ── */
+
+:root,
+[data-relay-theme="dark"],
+.pf-v5-theme-dark {
+  --relay-bg:                 #0B1220;
+  --relay-bg-accent:          #1A2B4A;
+  --relay-surface:            #131E32;
+  --relay-surface-elevated:   #1A2B4A;
+  --relay-border:             #2A3F5F;
+  --relay-border-strong:      #334155;
+  --relay-text:               #F8FAFC;
+  --relay-text-secondary:     #CBD5E1;
+  --relay-text-muted:         #94A3B8;
+  --relay-primary:            #1E3A5F;
+  --relay-primary-hover:      #24486F;
+  --relay-primary-active:     #162C4A;
+  --relay-pro:                #E8A42C;
+  --relay-pro-glow:           rgba(232, 164, 44, 0.25);
+  --relay-input-bg:           #0E1A2E;
+  --relay-input-border:       #2A3F5F;
+  --relay-input-focus-border: #3B82F6;
+  --relay-input-focus-ring:   rgba(59, 130, 246, 0.2);
+  --relay-shadow:             0 1px 2px rgba(2, 6, 23, 0.3), 0 8px 32px rgba(2, 6, 23, 0.45);
+  --relay-shadow-card:        0 1px 2px rgba(2, 6, 23, 0.2), 0 4px 16px rgba(2, 6, 23, 0.3), 0 16px 48px rgba(2, 6, 23, 0.35);
+  --relay-bg-image:           radial-gradient(1400px 700px at 15% -5%, rgba(30, 58, 95, 0.5) 0%, transparent 55%), radial-gradient(1000px 600px at 100% 100%, rgba(22, 44, 74, 0.4) 0%, transparent 50%), radial-gradient(600px 400px at 50% 50%, rgba(232, 164, 44, 0.03) 0%, transparent 70%);
+  color-scheme: dark;
+}
+
+[data-relay-theme="light"] {
+  --relay-bg:                 #FDFBF6;
+  --relay-bg-accent:          #FFFFFF;
+  --relay-surface:            #FFFFFF;
+  --relay-surface-elevated:   #FFFFFF;
+  --relay-border:             #E2E8F0;
+  --relay-border-strong:      #CBD5E1;
+  --relay-text:               #0F172A;
+  --relay-text-secondary:     #475569;
+  --relay-text-muted:         #64748B;
+  --relay-primary:            #1E3A5F;
+  --relay-primary-hover:      #24486F;
+  --relay-primary-active:     #162C4A;
+  --relay-pro:                #C88A14;
+  --relay-pro-glow:           rgba(200, 138, 20, 0.15);
+  --relay-input-bg:           #FFFFFF;
+  --relay-input-border:       #E2E8F0;
+  --relay-input-focus-border: #3B82F6;
+  --relay-input-focus-ring:   rgba(59, 130, 246, 0.15);
+  --relay-shadow:             0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 16px rgba(15, 23, 42, 0.06);
+  --relay-shadow-card:        0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 16px rgba(15, 23, 42, 0.06), 0 16px 48px rgba(15, 23, 42, 0.08);
+  --relay-bg-image:           radial-gradient(1400px 700px at 15% -5%, rgba(253, 251, 246, 0.9) 0%, transparent 55%), radial-gradient(1000px 600px at 100% 100%, rgba(226, 232, 240, 0.6) 0%, transparent 50%), radial-gradient(600px 400px at 50% 50%, rgba(200, 138, 20, 0.04) 0%, transparent 70%);
+  color-scheme: light;
+}
+
+/* ─── PatternFly v5 Global Overrides ─────────────────────────── */
+
+:root,
+[data-relay-theme="dark"] {
+  --pf-v5-global--primary-color--100:        var(--relay-primary);
+  --pf-v5-global--primary-color--200:        var(--relay-primary-hover);
+  --pf-v5-global--active-color--100:         var(--relay-primary);
+  --pf-v5-global--BackgroundColor--100:       var(--relay-bg);
+  --pf-v5-global--BackgroundColor--150:       var(--relay-surface);
+  --pf-v5-global--BackgroundColor--200:       var(--relay-surface);
+  --pf-v5-global--BackgroundColor--300:       var(--relay-surface-elevated);
+  --pf-v5-global--BackgroundColor--light-100: var(--relay-bg);
+  --pf-v5-global--BackgroundColor--light-200: var(--relay-surface);
+  --pf-v5-global--BackgroundColor--light-300: var(--relay-surface-elevated);
+  --pf-v5-global--BackgroundColor--dark-100:  var(--relay-bg);
+  --pf-v5-global--BackgroundColor--dark-200:  var(--relay-surface);
+  --pf-v5-global--BackgroundColor--dark-300:  var(--relay-surface);
+  --pf-v5-global--Color--100:                 var(--relay-text);
+  --pf-v5-global--Color--200:                 var(--relay-text-secondary);
+  --pf-v5-global--Color--light-100:           var(--relay-text);
+  --pf-v5-global--Color--light-200:           var(--relay-text-secondary);
+  --pf-v5-global--Color--dark-100:            var(--relay-text);
+  --pf-v5-global--BorderColor--100:           var(--relay-border);
+  --pf-v5-global--BorderColor--200:           var(--relay-border);
+  --pf-v5-global--BorderColor--300:           var(--relay-border-strong);
+  --pf-v5-global--BorderColor--dark-100:      var(--relay-border);
+  --pf-v5-global--link--Color:                var(--relay-primary);
+  --pf-v5-global--link--Color--hover:         var(--relay-primary-hover);
+  --pf-v5-global--FontFamily--text:           'Inter', system-ui, -apple-system, sans-serif;
+  --pf-v5-global--FontFamily--heading:        'Inter', system-ui, -apple-system, sans-serif;
+  --pf-v5-global--FontFamily--monospace:      ui-monospace, monospace;
+  --pf-v5-global--BorderRadius--sm:           10px;
+  --pf-v5-global--BorderRadius--lg:           16px;
+}
+
+[data-relay-theme="light"] {
+  --pf-v5-global--primary-color--100:        var(--relay-primary);
+  --pf-v5-global--primary-color--200:        var(--relay-primary-hover);
+  --pf-v5-global--BackgroundColor--100:       var(--relay-bg);
+  --pf-v5-global--BackgroundColor--light-100: var(--relay-bg);
+  --pf-v5-global--BackgroundColor--light-200: var(--relay-surface);
+  --pf-v5-global--BackgroundColor--dark-100:  #FFFFFF;
+  --pf-v5-global--BackgroundColor--dark-200:  #FFFFFF;
+  --pf-v5-global--BackgroundColor--dark-300:  #F8FAFC;
+  --pf-v5-global--Color--100:                 var(--relay-text);
+  --pf-v5-global--Color--200:                 var(--relay-text-secondary);
+  --pf-v5-global--Color--dark-100:            var(--relay-text);
+  --pf-v5-global--BorderColor--100:           var(--relay-border);
+  --pf-v5-global--BorderColor--300:           var(--relay-border-strong);
+  --pf-v5-global--link--Color:                var(--relay-primary);
+}
+
+/* pf-v5-theme-dark class must also carry dark tokens when set via JS on html */
+.pf-v5-theme-dark {
+  --pf-v5-global--BackgroundColor--100: var(--relay-bg) !important;
+  --pf-v5-global--Color--100: var(--relay-text) !important;
+}
+
+/* ─── Base ───────────────────────────────────────────────────── */
+
+html {
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--relay-bg);
+  background-image: var(--relay-bg-image);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  color: var(--relay-text) !important;
+  background: transparent !important;
+  min-height: 100vh;
+}
+
+[dir="rtl"] body {
+  font-family: 'Tajawal', 'Inter', system-ui, sans-serif !important;
+}
+
+/* ─── Page & Loading ─────────────────────────────────────────── */
+
+.pf-v5-c-page {
+  background-color: transparent !important;
+  background-image: var(--relay-bg-image);
+  background-attachment: fixed;
+}
+
+.pf-v5-c-page__main {
+  background-color: transparent !important;
+}
+
+.keycloak__loading-container {
+  background-color: var(--relay-bg) !important;
+  color: var(--relay-text) !important;
+}
+
+/* ─── Masthead (top bar) ─────────────────────────────────────── */
+
+/* Aggressively override PatternFly masthead — it uses --pf-v5-c-masthead--BackgroundColor and --pf-v5-global--BackgroundColor--dark-* */
+.pf-v5-c-masthead,
+.pf-v5-c-page__header,
+header.pf-v5-c-masthead {
+  background: var(--relay-surface) !important;
+  background-color: var(--relay-surface) !important;
+  --pf-v5-c-masthead--BackgroundColor: var(--relay-surface) !important;
+  border-bottom: 1px solid var(--relay-border) !important;
+  box-shadow: var(--relay-shadow) !important;
+  backdrop-filter: saturate(1.2);
+}
+.pf-v5-c-toolbar {
+  background-color: var(--relay-bg);
+}
+
+[data-relay-theme="dark"] .pf-v5-c-masthead,
+.pf-v5-theme-dark .pf-v5-c-masthead,
+[data-relay-theme="dark"] .pf-v5-c-page__header,
+.pf-v5-theme-dark .pf-v5-c-page__header,
+[data-relay-theme="dark"] header.pf-v5-c-masthead,
+.pf-v5-theme-dark header.pf-v5-c-masthead {
+  background: #0B1220 !important;
+  background-color: #0B1220 !important;
+  --pf-v5-c-masthead--BackgroundColor: #0B1220 !important;
+  background-image: none !important;
+  border-bottom-color: var(--relay-border) !important;
+}
+
+[data-relay-theme="light"] .pf-v5-c-masthead,
+[data-relay-theme="light"] .pf-v5-c-page__header,
+[data-relay-theme="light"] header.pf-v5-c-masthead {
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+  --pf-v5-c-masthead--BackgroundColor: #FFFFFF !important;
+  background-image: none !important;
+  border-bottom-color: #E2E8F0 !important;
+}
+
+.pf-v5-c-masthead__main,
+.pf-v5-c-masthead__content {
+  border: none !important;
+  background: transparent !important;
+}
+
+.pf-v5-c-masthead__brand {
+  font-weight: 800 !important;
+  letter-spacing: -0.04em;
+}
+
+/* Brand logo — ensure Relay logo is visible and correctly sized */
+.pf-v5-c-brand {
+  max-height: 32px !important;
+  height: 28px !important;
+  width: auto !important;
+  object-fit: contain;
+  filter: none !important;
+}
+
+[data-relay-theme="light"] .pf-v5-c-masthead .pf-v5-c-brand {
+  /* light header needs dark logo — if JS hasn't swapped yet, invert the dark logo as fallback */
+}
+
+.pf-v5-c-masthead__toggle .pf-v5-c-button,
+.pf-v5-c-masthead .pf-v5-c-button.pf-m-plain {
+  color: var(--relay-text) !important;
+}
+
+/* Hamburger & toolbar icons should match Relay text */
+.pf-v5-c-masthead .pf-v5-c-button__icon,
+.pf-v5-c-masthead .fas,
+.pf-v5-c-masthead .fa {
+  color: var(--relay-text) !important;
+}
+
+/* ─── Sidebar / Nav ──────────────────────────────────────────── */
+
+.pf-v5-c-page__sidebar {
+  background-color: var(--relay-surface) !important;
+  border-right: 1px solid var(--relay-border) !important;
+  box-shadow: var(--relay-shadow) !important;
+}
+
+.pf-v5-c-nav {
+  --pf-v5-c-nav__link--BackgroundColor: transparent;
+  --pf-v5-c-nav__link--Color: var(--relay-text-secondary);
+}
+
+.pf-v5-c-nav__link {
+  color: var(--relay-text-secondary) !important;
+  border-radius: 10px !important;
+  margin: 2px 8px !important;
+  font-weight: 500 !important;
+  transition: all 150ms ease !important;
+}
+
+.pf-v5-c-nav__link:hover {
+  background-color: var(--relay-surface-elevated) !important;
+  color: var(--relay-text) !important;
+}
+
+.pf-v5-c-nav__link.pf-m-current,
+.pf-v5-c-nav__item.pf-m-current .pf-v5-c-nav__link,
+.pf-v5-c-nav__link.pf-m-current:hover {
+  background-color: var(--relay-primary) !important;
+  color: #F8FAFC !important;
+  border-left: none !important;
+  box-shadow: 0 2px 8px rgba(30, 58, 95, 0.3) !important;
+}
+
+[data-relay-theme="light"] .pf-v5-c-nav__link.pf-m-current {
+  background: linear-gradient(135deg, #1E3A5F 0%, #2A4F7A 100%) !important;
+}
+
+.pf-v5-c-nav__link::before {
+  display: none !important;
+}
+
+/* ─── Cards & Panels ─────────────────────────────────────────── */
+
+.pf-v5-c-card,
+.pf-v5-c-panel,
+.pf-v5-c-page__main-section .pf-v5-c-card {
+  background-color: var(--relay-surface) !important;
+  border: 1px solid var(--relay-border) !important;
+  border-radius: 16px !important;
+  box-shadow: var(--relay-shadow-card) !important;
+  overflow: hidden;
+}
+
+.pf-v5-c-card__header,
+.pf-v5-c-card__title,
+.pf-v5-c-panel__header {
+  color: var(--relay-text) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em;
+}
+
+.pf-v5-c-card__body,
+.pf-v5-c-panel__main-body {
+  color: var(--relay-text-secondary) !important;
+}
+
+/* ─── Buttons ────────────────────────────────────────────────── */
+
+.pf-v5-c-button.pf-m-primary {
+  background: linear-gradient(135deg, #1E3A5F 0%, #2A4F7A 100%) !important;
+  color: #F8FAFC !important;
+  border: none !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em;
+  box-shadow: 0 2px 8px rgba(30, 58, 95, 0.25), inset 0 1px 0 rgba(255,255,255,0.08) !important;
+  transition: all 180ms ease !important;
+}
+
+.pf-v5-c-button.pf-m-primary:hover {
+  background: linear-gradient(135deg, #24486F 0%, #325E8D 100%) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(30, 58, 95, 0.35), inset 0 1px 0 rgba(255,255,255,0.1) !important;
+}
+
+.pf-v5-c-button.pf-m-primary:active {
+  background: linear-gradient(135deg, #162C4A 0%, #1E3A5F 100%) !important;
+  transform: translateY(0);
+}
+
+.pf-v5-c-button.pf-m-secondary,
+.pf-v5-c-button.pf-m-link {
+  border-radius: 10px !important;
+  font-weight: 500 !important;
+}
+
+.pf-v5-c-button.pf-m-secondary {
+  background: transparent !important;
+  border: 1.5px solid var(--relay-border) !important;
+  color: var(--relay-text-secondary) !important;
+}
+
+.pf-v5-c-button.pf-m-secondary:hover {
+  background: var(--relay-surface-elevated) !important;
+  color: var(--relay-text) !important;
+  border-color: var(--relay-border-strong) !important;
+}
+
+.pf-v5-c-button.pf-m-link {
+  color: var(--relay-primary) !important;
+}
+
+.pf-v5-c-button.pf-m-link:hover {
+  color: var(--relay-primary-hover) !important;
+}
+
+/* Danger button keeps red but with relay radius */
+.pf-v5-c-button.pf-m-danger {
+  border-radius: 10px !important;
+}
+
+/* ─── Forms & Inputs ─────────────────────────────────────────── */
+
+.pf-v5-c-form-control {
+  background-color: var(--relay-input-bg) !important;
+  border: 1.5px solid var(--relay-input-border) !important;
+  border-radius: 12px !important;
+  color: var(--relay-text) !important;
+  transition: border-color 180ms ease, box-shadow 180ms ease !important;
+  height: 3rem !important;
+}
+
+.pf-v5-c-form-control:hover {
+  border-color: var(--relay-border-strong) !important;
+}
+
+.pf-v5-c-form-control:focus,
+.pf-v5-c-form-control.pf-m-focus {
+  border-color: var(--relay-input-focus-border) !important;
+  box-shadow: 0 0 0 3px var(--relay-input-focus-ring) !important;
+  outline: none !important;
+  background-color: var(--relay-surface) !important;
+}
+
+.pf-v5-c-form-control::placeholder {
+  color: var(--relay-text-muted) !important;
+}
+
+.pf-v5-c-form__label,
+.pf-v5-c-form__group-label {
+  color: var(--relay-text) !important;
+  font-weight: 600 !important;
+  font-size: 0.8125rem !important;
+}
+
+.pf-v5-c-form__helper-text,
+.pf-v5-c-helper-text {
+  color: var(--relay-text-muted) !important;
+}
+
+.pf-v5-c-check__label {
+  color: var(--relay-text-secondary) !important;
+}
+
+/* ─── Alerts ─────────────────────────────────────────────────── */
+
+.pf-v5-c-alert {
+  border-radius: 12px !important;
+  border: 1px solid var(--relay-border) !important;
+}
+
+.pf-v5-c-alert.pf-m-danger {
+  background-color: rgba(239, 68, 68, 0.08) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+  color: #FCA5A5 !important;
+}
+
+[data-relay-theme="light"] .pf-v5-c-alert.pf-m-danger {
+  background-color: #FEF2F2 !important;
+  color: #991B1B !important;
+}
+
+.pf-v5-c-alert.pf-m-warning {
+  background-color: rgba(232, 164, 44, 0.08) !important;
+  border-color: rgba(232, 164, 44, 0.3) !important;
+  color: #FDE68A !important;
+}
+
+[data-relay-theme="light"] .pf-v5-c-alert.pf-m-warning {
+  background-color: #FFFBEB !important;
+  color: #92400E !important;
+}
+
+.pf-v5-c-alert.pf-m-success {
+  background-color: rgba(34, 197, 94, 0.08) !important;
+  border-color: rgba(34, 197, 94, 0.3) !important;
+  color: #86EFAC !important;
+}
+
+[data-relay-theme="light"] .pf-v5-c-alert.pf-m-success {
+  background-color: #F0FDF4 !important;
+  color: #166534 !important;
+}
+
+/* ─── Tabs ───────────────────────────────────────────────────── */
+
+.pf-v5-c-tabs__link {
+  color: var(--relay-text-muted) !important;
+}
+
+.pf-v5-c-tabs__link:hover {
+  color: var(--relay-text) !important;
+}
+
+.pf-v5-c-tabs__item.pf-m-current .pf-v5-c-tabs__link {
+  color: var(--relay-primary) !important;
+}
+
+.pf-v5-c-tabs__item.pf-m-current::after {
+  border-color: var(--relay-primary) !important;
+}
+
+/* ─── Modal ──────────────────────────────────────────────────── */
+
+.pf-v5-c-modal-box {
+  background-color: var(--relay-surface) !important;
+  border: 1px solid var(--relay-border) !important;
+  border-radius: 20px !important;
+  box-shadow: var(--relay-shadow-card) !important;
+}
+
+.pf-v5-c-modal-box__header,
+.pf-v5-c-modal-box__title {
+  color: var(--relay-text) !important;
+}
+
+.pf-v5-c-backdrop {
+  backdrop-filter: blur(8px);
+  background-color: rgba(2, 6, 23, 0.5) !important;
+}
+
+/* ─── Tables / Data lists ───────────────────────────────────── */
+
+.pf-v5-c-table,
+.pf-v5-c-data-list {
+  background-color: var(--relay-surface) !important;
+  border: 1px solid var(--relay-border) !important;
+  border-radius: 16px !important;
+  overflow: hidden;
+}
+
+.pf-v5-c-table thead th {
+  background-color: var(--relay-surface) !important;
+  color: var(--relay-text-secondary) !important;
+  font-weight: 600 !important;
+  font-size: 0.8125rem !important;
+  border-bottom: 1px solid var(--relay-border) !important;
+}
+
+.pf-v5-c-table tbody tr {
+  border-bottom: 1px solid var(--relay-border) !important;
+}
+
+.pf-v5-c-table tbody tr:hover {
+  background-color: var(--relay-surface-elevated) !important;
+}
+
+/* ─── Typography helpers ────────────────────────────────────── */
+
+.pf-v5-c-title {
+  color: var(--relay-text) !important;
+  letter-spacing: -0.02em !important;
+}
+
+.pf-v5-c-content {
+  color: var(--relay-text-secondary) !important;
+}
+
+/* ─── Scrollbar (WebKit) ────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--relay-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--relay-border-strong);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--relay-text-muted);
+}
+
+/* ─── Focus visible ─────────────────────────────────────────── */
+
+*:focus-visible {
+  outline: 2px solid var(--relay-input-focus-border) !important;
+  outline-offset: 2px !important;
+}
+
+/* ─── Branding: subtle Relay mark in masthead ────────────────── */
+
+.pf-v5-c-masthead__main::before {
+  content: "";
+  display: none; /* reserved for future inline logo injection */
+}
+
+/* ─── Responsive tweaks ─────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .pf-v5-c-page__sidebar {
+    border-right: none !important;
+    border-top: 1px solid var(--relay-border) !important;
+  }
+}
+
+/* ─── RTL support ───────────────────────────────────────────── */
+
+[dir="rtl"] .pf-v5-c-nav__link {
+  font-family: 'Tajawal', 'Inter', sans-serif !important;
+}
+
+[dir="rtl"] body {
+  letter-spacing: 0 !important;
+}
