@@ -1,34 +1,23 @@
+<!-- Minimal shell — keeps your test harness card but now uses KeycloakService + environment.ts -->
 <main class="d-flex justify-content-center align-items-center vh-100 bg-body-tertiary">
   <div class="card shadow-sm" style="width: 26rem">
     <div class="card-body text-center p-4">
       <h1 class="h3 mb-1">Relay</h1>
       <p class="text-body-secondary small mb-4">Auth flow test harness</p>
 
-      @if (user(); as u) {
+      @if (isAuthenticated()) {
         <p class="mb-1">Signed in as</p>
-        <p class="fw-bold mb-3">{{ u.email ?? u.preferred_username ?? u.sub }}</p>
-        <p class="text-body-secondary small text-break">sub: {{ u.sub }}</p>
-        <a
-          class="btn btn-outline-secondary btn-sm"
-          href="http://localhost:9090/realms/relay/account/"
-          target="_blank"
-        >
-          Manage account
-        </a>
-        <a
-          class="btn btn-outline-danger btn-sm ms-2"
-          href="http://localhost:9090/realms/relay/protocol/openid-connect/logout?client_id=relay-frontend&post_logout_redirect_uri=http%3A%2F%2Flocalhost%3A4200%2F"
-        >
-          Sign out
-        </a>
+        <p class="fw-bold mb-3">{{ userName() || sub() }}</p>
+        <p class="text-body-secondary small text-break">sub: {{ sub() }}</p>
+        <div class="d-flex justify-content-center gap-2">
+          <button type="button" class="btn btn-outline-secondary btn-sm" (click)="manageAccount()">Manage account</button>
+          <button type="button" class="btn btn-outline-danger btn-sm" (click)="signOut()">Sign out</button>
+        </div>
       } @else {
-        @if (status()) {
-          <div class="alert alert-warning py-2 small">{{ status() }}</div>
-        }
-        <button type="button" class="btn btn-primary w-100" (click)="signIn()">
-          Sign in / Register
-        </button>
+        <p class="text-body-secondary small mb-3">You are Guest — you can view public Notes without login.</p>
+        <button type="button" class="btn btn-primary w-100" (click)="signIn()">Sign in / Register</button>
       }
     </div>
   </div>
 </main>
+<router-outlet />

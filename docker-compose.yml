@@ -125,6 +125,12 @@ services:
 
   frontend:
     build: ./relay-frontend
+    environment:
+      KEYCLOAK_FRONTEND_URL: ${KEYCLOAK_FRONTEND_URL:-http://localhost:9090}
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM:-relay}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID:-relay-frontend}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:4200}
+      API_URL: ${API_URL:-http://localhost:8080}
     ports:
       - "4200:80"
     depends_on:
